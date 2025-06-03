@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Games Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Custom CSS for futuristic theme and animations */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Orbitron:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        .game-card {
+            background-color: #1c1c1c;
+            border: 2px solid #333;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3), 0 0 30px rgba(0, 255, 255, 0.1);
+            transition: all 0.3s ease-in-out;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), 0 0 40px rgba(0, 255, 255, 0.2);
+            border-color: #0ff;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+            transform: rotate(45deg);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .game-card:hover::before {
+            opacity: 1;
+        }
+
+        .game-title {
+            font-family: 'Orbitron', sans-serif;
+            color: #0ff;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        /* Navigation buttons (only one left, but keeping styling) */
+        .nav-button {
+            background-color: #007bff;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+        }
+
+        .nav-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.6);
+        }
+
+        .nav-button.active {
+            background-color: #0ff;
+            color: #1a1a1a;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+            transform: scale(1.05);
+        }
+
+        /* Coin Flip */
+        .coin-container {
+            perspective: 1000px; /* For 3D effect */
+            margin-top: 2rem;
+        }
+
+        .coin {
+            width: 100px;
+            height: 100px;
+            background-color: #ffd700; /* Gold */
+            border-radius: 50%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s ease-out;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7), inset 0 0 10px rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .coin.flipping {
+            animation: coinFlip 1.5s ease-in-out forwards;
+        }
+
+        @keyframes coinFlip {
+            0% { transform: rotateY(0deg); }
+            25% { transform: rotateY(900deg); } /* Multiple rotations */
+            50% { transform: rotateY(1800deg); }
+            75% { transform: rotateY(2700deg); }
+            100% { transform: rotateY(3600deg); }
+        }
+
+        .coin.heads {
+            transform: rotateY(0deg);
+        }
+
+        .coin.tails {
+            transform: rotateY(180deg);
+        }
+
+        /* Guess buttons specific styling */
+        .guess-button {
+            background-color: #333;
+            color: #0ff;
+            border: 1px solid #0ff;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .guess-button:hover {
+            background-color: #0ff;
+            color: #1c1c1c;
+        }
+
+        .guess-button.selected {
+            background-color: #0ff;
+            color: #1c1c1c;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .game-card {
+                padding: 1rem;
+            }
+            .game-title {
+                font-size: 1.2rem;
+            }
+            .coin {
+                width: 80px;
+                height: 80px;
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+            .game-title {
+                font-size: 1rem;
+            }
+            .coin {
+                width: 70px;
+                height: 70px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+    <header class="w-full max-w-4xl mb-8">
+        <h1 class="text-4xl font-bold text-center text-white mb-6 font-['Orbitron'] tracking-wide">
+            <span class="text-cyan-400">FUTURISTIC</span> GAMES HUB
+        </h1>
+        <nav class="flex justify-center space-x-4">
+            <button id="nav-coin-flip" class="nav-button active">Coin Flip</button>
+        </nav>
+    </header>
+
+    <main id="game-container" class="w-full max-w-4xl flex flex-col items-center justify-center">
+        </main>
+
+    <footer class="w-full max-w-4xl mt-8 text-center text-gray-500 text-sm">
+        <p>&copy; 2025 Futuristic Games. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // --- Global Variables and Setup ---
+        const gameContainer = document.getElementById('game-container');
+        const navButtons = document.querySelectorAll('.nav-button');
+
+        // Function to load game content (now only Coin Flip)
+        function loadGame(gameId) {
+            // Clear previous game content
+            gameContainer.innerHTML = '';
+
+            // Deactivate all nav buttons (only one now, but good practice)
+            navButtons.forEach(button => button.classList.remove('active'));
+            // Activate the current nav button
+            document.getElementById(`nav-${gameId}`).classList.add('active');
+
+            // Load the selected game (only Coin Flip)
+            if (gameId === 'coin-flip') {
+                renderCoinFlip();
+            } else {
+                gameContainer.innerHTML = '<p class="text-red-500">Game not found. Only Coin Flip is available.</p>';
+            }
+        }
+
+        // Add event listeners to navigation buttons (only for Coin Flip now)
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const gameId = button.id.replace('nav-', '');
+                loadGame(gameId);
+            });
+        });
+
+        // --- Coin Flip Game Logic ---
+        let userGuess = null;
+        let wins = 0;
+        let losses = 0;
+
+        function renderCoinFlip() {
+            gameContainer.innerHTML = `
+                <div class="game-card w-full max-w-sm mx-auto flex flex-col items-center">
+                    <h2 class="game-title">Coin Flip</h2>
+
+                    <div class="flex space-x-4 mb-4">
+                        <button id="guess-heads" class="guess-button">Guess Heads</button>
+                        <button id="guess-tails" class="guess-button">Guess Tails</button>
+                    </div>
+
+                    <div class="coin-container">
+                        <div id="coin" class="coin">?</div>
+                    </div>
+
+                    <button id="flip-button" class="nav-button mt-6" disabled>Flip Coin</button>
+                    <p id="flip-result" class="text-center text-lg mt-4 font-semibold text-white"></p>
+                    <p class="text-center text-md mt-2">
+                        Wins: <span id="wins-count" class="text-green-400 font-bold">${wins}</span> |
+                        Losses: <span id="losses-count" class="text-red-400 font-bold">${losses}</span>
+                    </p>
+                </div>
+            `;
+
+            const coin = document.getElementById('coin');
+            const flipButton = document.getElementById('flip-button');
+            const flipResult = document.getElementById('flip-result');
+            const guessHeadsButton = document.getElementById('guess-heads');
+            const guessTailsButton = document.getElementById('guess-tails');
+            const winsCount = document.getElementById('wins-count');
+            const lossesCount = document.getElementById('losses-count');
+
+            // Function to update score display
+            function updateScore() {
+                winsCount.textContent = wins;
+                lossesCount.textContent = losses;
+            }
+
+            // Reset game state for a new round
+            function resetRound() {
+                userGuess = null;
+                coin.textContent = '?';
+                flipResult.textContent = 'Make your guess!';
+                flipResult.classList.remove('text-green-400', 'text-red-400', 'text-yellow-400');
+                flipResult.classList.add('text-white');
+                flipButton.disabled = true; // Disable flip until a guess is made
+                guessHeadsButton.classList.remove('selected');
+                guessTailsButton.classList.remove('selected');
+                guessHeadsButton.disabled = false;
+                guessTailsButton.disabled = false;
+            }
+
+            // Event listeners for guess buttons
+            guessHeadsButton.addEventListener('click', () => {
+                userGuess = 'Heads';
+                guessHeadsButton.classList.add('selected');
+                guessTailsButton.classList.remove('selected');
+                flipButton.disabled = false; // Enable flip button after guess
+                flipResult.textContent = 'Ready to flip!';
+                flipResult.classList.add('text-yellow-400');
+                flipResult.classList.remove('text-white');
+            });
+
+            guessTailsButton.addEventListener('click', () => {
+                userGuess = 'Tails';
+                guessTailsButton.classList.add('selected');
+                guessHeadsButton.classList.remove('selected');
+                flipButton.disabled = false; // Enable flip button after guess
+                flipResult.textContent = 'Ready to flip!';
+                flipResult.classList.add('text-yellow-400');
+                flipResult.classList.remove('text-white');
+            });
+
+            flipButton.addEventListener('click', () => {
+                if (userGuess === null) {
+                    flipResult.textContent = 'Please make a guess first!';
+                    flipResult.classList.add('text-red-400');
+                    return;
+                }
+
+                flipButton.disabled = true; // Disable button during flip
+                guessHeadsButton.disabled = true; // Disable guess buttons during flip
+                guessTailsButton.disabled = true;
+
+                coin.classList.remove('heads', 'tails'); // Reset previous state
+                coin.classList.add('flipping'); // Start flip animation
+                flipResult.textContent = 'Flipping...';
+                flipResult.classList.remove('text-green-400', 'text-red-400', 'text-yellow-400');
+                flipResult.classList.add('text-white');
+
+                setTimeout(() => {
+                    const result = Math.random() < 0.5 ? 'Heads' : 'Tails';
+                    coin.classList.remove('flipping');
+                    coin.classList.add(result.toLowerCase()); // Apply final orientation
+                    coin.textContent = result.toUpperCase();
+
+                    if (userGuess === result) {
+                        wins++;
+                        flipResult.textContent = `It's ${result}! You guessed correctly!`;
+                        flipResult.classList.add('text-green-400');
+                    } else {
+                        losses++;
+                        flipResult.textContent = `It's ${result}! You guessed incorrectly.`;
+                        flipResult.classList.add('text-red-400');
+                    }
+                    updateScore();
+
+                    // Re-enable flip button and reset for next round after a short delay
+                    setTimeout(resetRound, 2000); // Wait 2 seconds before resetting for next guess
+                }, 1500); // Match animation duration
+            });
+
+            // Initial setup when game is rendered
+            resetRound();
+            updateScore(); // Display initial scores (0,0)
+        }
+
+        // --- Initial Load ---
+        // Load Coin Flip by default when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadGame('coin-flip');
+        });
+
+    </script>
+</body>
+</html>
